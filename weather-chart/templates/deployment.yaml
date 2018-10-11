@@ -1,0 +1,29 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ include "weather-chart.name" . }}
+  labels:
+    app: {{ .Values.app.ms.name }}
+    chart: {{ include "weather-chart.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Values.app.ms.name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "weather-chart.name" . }}
+      release: {{ .Values.app.ms.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "weather-chart.name" . }}
+        release: {{ .Values.app.ms.name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP

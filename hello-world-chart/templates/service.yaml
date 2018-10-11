@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.app.ms.name }}
+  labels:
+    app: {{ .Values.app.ms.name }}
+    chart: {{ include "hello-world-chart.chart" . }}
+    release: {{ .Values.app.ms.name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ include "hello-world-chart.name" . }}
+    release: {{ .Values.app.ms.name }}

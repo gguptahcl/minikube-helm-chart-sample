@@ -1,0 +1,37 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ include "hello-world-chart.name" . }}
+  labels:
+    app: {{ .Values.app.ms.name }}
+    chart: {{ include "hello-world-chart.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Values.app.ms.name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "hello-world-chart.name" . }}
+      release: {{ .Values.app.ms.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "hello-world-chart.name" . }}
+        release: {{ .Values.app.ms.name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          env:
+            - name: WEATHER_SERVICE_NAME_1
+              value: weather-service
+            - name: WEATHER_SERVICE_NAME
+              valueFrom:
+               configMapKeyRef:
+                name: hello-world-config-map
+                key: weather-service-name
