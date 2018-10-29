@@ -19,7 +19,8 @@ fullnameOverride: ""
 
 service:
   #type: ClusterIP
-  type: NodePort
+  #type: NodePort
+  type: LoadBalancer
   port: 80
 
 ingress:
